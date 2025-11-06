@@ -213,9 +213,10 @@ with col1:
                 retrieved_docs = filtered_retriever(query)
             else:
                 retrieved_docs = retriever.vectorstore.similarity_search(query, k=k_retrieve)
-                if not retrieved_docs:
-                    st.warning("⚠️ 드론 관련 문서를 찾을 수 없습니다. 질문을 다시 입력해주세요.")
-                    st.stop()
+
+            if not retrieved_docs:
+                st.warning("⚠️ 관련 문서를 찾을 수 없습니다. 질문을 다시 입력해주세요.")
+                st.stop()
 
             # Display retrieved docs (collapsed)
             with st.expander(f"🔎 검색된 {len(retrieved_docs)}개 문서 보기"):
