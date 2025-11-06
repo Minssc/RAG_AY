@@ -7,10 +7,11 @@
 ## 🧩 Requirements
 
 ```bash
-pip install faiss-cpu langchain langchain-core langchain-ollama langchain-community streamlit pymupdf tqdm pypdf
+pip install -r requirements.txt 
 ```
-
----
+### list of used packages:
+>langchain langchain-core langchain-ollama langchain-community \
+streamlit pymupdf tqdm pypdf langdetect cryptography faiss-cpu
 
 ## 📖 프로젝트 소개
 
@@ -21,7 +22,6 @@ pip install faiss-cpu langchain langchain-core langchain-ollama langchain-commun
 사전 구축된 데이터베이스(FAISS 벡터 스토어)에 질의할 수 있습니다.  
 이를 통해 드론 운용, 안전 규정, SDK 문서 등 다양한 정보를 **자연어로 쉽게 탐색**할 수 있습니다.
 
----
 
 ## 👥 팀원 소개
 
@@ -33,7 +33,6 @@ pip install faiss-cpu langchain langchain-core langchain-ollama langchain-commun
 | **윤영진** | [@YunYoungJin](https://github.com/YunYoungJin) | 코드 작성 |
 | **정지훈** | [@JJhun26](https://github.com/JJhun26) | 발표 자료 (PPT) |
 
----
 
 ## ⚙️ 기술 스택
 
@@ -47,7 +46,6 @@ pip install faiss-cpu langchain langchain-core langchain-ollama langchain-commun
 | **문서 파서** | **PyMuPDF / pypdf** | PDF 문서 내용을 텍스트로 변환 및 처리 |
 | **보조 도구** | **tqdm** | 데이터 처리 과정 진행률 시각화 |
 
----
 
 ## 💡 주요 기능
 
@@ -59,13 +57,12 @@ pip install faiss-cpu langchain langchain-core langchain-ollama langchain-commun
 - 🔎 **필터링/검색 옵션** — 카테고리별 검색 가능
 - 🧠 **로컬 LLM 통합** — 인터넷 연결 없이 Ollama 로컬 모델을 통한 질의응답  
 
----
 
 ## 🚀 설치 및 실행 방법
 
 1. **필요 패키지 설치**
    ```bash
-   pip install faiss-cpu langchain langchain-core langchain-ollama langchain-community streamlit pymupdf tqdm pypdf
+   pip install -r requirements.txt
    ```
 
 2. **Ollama 서버 실행**
@@ -77,17 +74,12 @@ pip install faiss-cpu langchain langchain-core langchain-ollama langchain-commun
    ```bash
    streamlit run v1.py
    ```
-   또는
-   ```bash
-   streamlit run v2.py
-   ```
 
 4. **웹 접속**
    ```
    http://localhost:8501
    ```
 
----
 
 ## 🧭 한계점 및 개선 방향
 
@@ -100,7 +92,6 @@ pip install faiss-cpu langchain langchain-core langchain-ollama langchain-commun
 | **LLM 응답 신뢰성 부족** | 출처 인용 및 답변 근거 표시 기능 추가 |
 | **UI 단조로움** | Streamlit 커스텀 컴포넌트 활용한 직관적 인터페이스 개선 |
 
----
 
 ## 🧱 추가 구현 기능
 
@@ -109,7 +100,6 @@ pip install faiss-cpu langchain langchain-core langchain-ollama langchain-commun
 - 🌏**다국어 지원: 영어/한국어 등 다국어 응답**
 - 🗂️**필터링/검색 옵션: 카테고리별, 난이도별 등 필터 기능**
 
----
 
 ## 📚 데이터 출처
 
