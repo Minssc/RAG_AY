@@ -255,22 +255,29 @@ with col1:
                 {"role": "user", "content": user_prompt}
             ]
 
-            st.markdown("### ✨ 실시간 답변")
             response_area = st.empty()
             partial = ""
             try:
                 with st.spinner("AI가 답변 중입니다..."):
-                    for chunk in llm.stream(messages):
-                        token = getattr(chunk, "content", "")
-                        partial += token
-                        response_area.markdown(partial)
-                answer_text = partial
+                    if stream_enabled:
+                        # 스트리밍 모드
+                        for chunk in llm.stream(messages):
+                            token = getattr(chunk, "content", "")
+                            partial += token
+                            response_area.markdown(partial)
+                        answer_text = partial
+                    else:
+                        # 비스트리밍 모드
+                        result = llm.invoke(messages)
+                        answer_text = getattr(result, "content", str(result))
+                        response_area.markdown(answer_text)
+
             except Exception as e:
                 st.error(f"LLM 호출 실패: {e}")
                 answer_text = f"오류로 인해 답변을 생성할 수 없습니다: {e}"
 
             # Save history
-            st.session_state["chat_history"].insert(0, {"q": query, "a": answer_text})
+            st.session_state["chat_history"].append({"q": query, "a": answer_text})
             st.rerun()
 
 with col2:
@@ -281,8 +288,10 @@ with col2:
 # Show chat history
 st.markdown("### 대화 기록")
 if "chat_history" in st.session_state:
-    for i, chat in enumerate(st.session_state["chat_history"], start=1):
-        st.markdown(f"**{i}️⃣ 질문:** {chat['q']}")
+    total = len(st.session_state["chat_history"])
+    for i, chat in enumerate(reversed(st.session_state["chat_history"]), start=1):
+        q_num = total - i + 1
+        st.markdown(f"**{q_num}️⃣ 질문:** {chat['q']}")
         st.markdown(f"💬 {chat['a']}")
         st.markdown("---")
 
