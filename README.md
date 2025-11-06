@@ -56,7 +56,7 @@ pip install faiss-cpu langchain langchain-core langchain-ollama langchain-commun
 - 🤖 **LLM 질의응답 (RAG 구조)** — 검색된 문서를 기반으로 신뢰성 있는 AI 답변 생성  
 - 🌐 **스트리밍 응답 지원** — AI 답변을 실시간으로 출력  
 - 🗂️ **다국어 지원** — 한국어/영어 질의 모두 가능  
-- 🔎 **필터링/검색 옵션** — 카테고리별, 난이도별 검색 확장 가능 (추가 예정)  
+- 🔎 **필터링/검색 옵션** — 카테고리별 검색 가능
 - 🧠 **로컬 LLM 통합** — 인터넷 연결 없이 Ollama 로컬 모델을 통한 질의응답  
 
 ---
@@ -166,4 +166,4 @@ pip install faiss-cpu langchain langchain-core langchain-ollama langchain-commun
 - [📚 공식 문서 (GitHub)](https://github.com/ArduPilot/ardupilot_wiki/tree/master/copter/source/docs)
 
 
-\* 임베딩 시간 단축을 위해 예외
+\* *임베딩 시간 단축을 위해 제외*
