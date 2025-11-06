@@ -1,7 +1,7 @@
 # 🚁 팀 애용 RAG 프로젝트
 
 # Requirements
-```pip install faiss-cpu langchain langchain-core langchain-ollama langchain-community streamlit pymupdf tqdm```
+```pip install faiss-cpu langchain langchain-core langchain-ollama langchain-community streamlit pymupdf tqdm pypdf```
 
 # 추가 구현사항
 - 파일 업로드: 사용자가 직접 문서 업로드 가능

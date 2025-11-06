@@ -7,6 +7,7 @@
 
 import os
 import glob
+from pathlib import Path
 import faiss
 import streamlit as st
 from typing import List
@@ -22,6 +23,7 @@ from langchain_core.documents import Document
 # 🔧 기본 설정
 # =====================================
 PDF_DIR = "drone_pdfs"      # PDF 폴더명 (donre_pdfs → 오타 수정)
+TEXT_DIR = "data"
 INDEX_DIR = "faiss_index"   # 인덱스 저장 폴더
 USE_OLLAMA_DEFAULT = True   # 기본 설정값
 
@@ -30,13 +32,19 @@ st.title("🛸 Drone Info Assistant — RAG 기반 문서 검색 & 답변")
 
 
 # =====================================
-# 📄 PDF 로드
+# 📄 DATA 로드
 # =====================================
-def load_all_pdfs(pdf_dir: str):
+def load_all_data(pdf_dir: str, text_dir: str = "data"):
+    text_paths = []
+    for file_path in Path(text_dir).rglob('*'):
+        if file_path.suffix.lower() not in ['.md', '.rst']:
+            continue
+        text_paths.append(file_path.as_posix())
+
     pdf_paths = glob.glob(os.path.join(pdf_dir, "*.pdf"))
     if not pdf_paths:
         st.error(f"❌ PDF 폴더({pdf_dir})에 파일이 없습니다.")
-        return []
+        return [] # skip text folder checking
 
     all_docs = []
     for pdf_path in pdf_paths:
@@ -49,6 +57,21 @@ def load_all_pdfs(pdf_dir: str):
             st.info(f"📘 {os.path.basename(pdf_path)} 로드 완료 ({len(docs)} 페이지)")
         except Exception as e:
             st.warning(f"⚠️ {pdf_path} 로드 실패: {e}")
+
+    for text_path in text_paths:
+        with open(text_path, 'r') as f:
+            content = f.read()
+        all_docs.append(Document(
+            page_content=content,
+            metadata={
+                "source": os.path.basename(text_path),
+                "path": text_path,
+                "type": "text"
+            }           
+        ))
+
+    st.info(f"📘 data 폴더 내 md,rst 파일 로드 완료: ({len(text_paths)}) 파일")
+        
     return all_docs
 
 
@@ -57,7 +80,7 @@ def load_all_pdfs(pdf_dir: str):
 # =====================================
 @st.cache_resource(show_spinner=False)
 def build_vectorstore():
-    all_docs = load_all_pdfs(PDF_DIR)
+    all_docs = load_all_data(PDF_DIR)
     if not all_docs:
         return None
 
