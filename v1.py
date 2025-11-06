@@ -13,6 +13,7 @@ import faiss
 import streamlit as st
 from typing import List, Dict, Optional
 from langdetect import detect, LangDetectException
+from dotenv import load_dotenv
 
 from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader
@@ -231,18 +232,18 @@ with col1:
             system_template = (
                 f"**반드시** { '한국어로' if lang=='ko' else '영어로' } 답변하세요.\n\n"
                 "문서 외부의 정보나 URL, 출처, 규정, 수치를 생성하거나 추측하지 마세요.\n\n"
-                "다음에 제시된 문서들을 **유일한 정보 출처**로 사용해야 합니다. "
-                "당신은 드론 관련 법규와 기술 문서에 대한 전문 분석가입니다. "
+                "다음에 제시된 문서들을 **유일한 정보 출처**로 사용해야 합니다. \n"
+                "질문이 드론과 무관할 경우, 반드시 다음처럼 답하세요: 이 시스템은 드론 관련 정보만 제공합니다.\n"
+                "당신은 드론 관련 법규와 기술 문서에 대한 전문 분석가입니다. \n\n"
                 "엄격한 지침:\n"
                 "1. 아래 참고 문서의 내용만을 바탕으로 답변하세요.\n"
                 "2. 문서에 포함되지 않은 URL, 기관명, 수치, 규정을 절대로 생성하지 마세요.\n"
                 "3. 문서에 'url' 또는 'source' 메타데이터가 없는 경우, 그 항목은 생략하세요.\n"
                 "4. '참고문헌' 섹션에는 실제 문서 메타데이터에 존재하는 title, url만 표시하세요.\n"
-                "5. 문서 내용이 불충분할 경우, '해당 문서에서는 관련 정보를 찾을 수 없습니다.' 라고 명시하세요.\n"
-                "질문이 드론과 무관할 경우, 반드시 다음처럼 답하세요: 이 시스템은 드론 관련 정보만 제공합니다.\n"
+                "5. 참고 문서 내용이 불충분할 경우, '해당 문서에서는 관련 정보를 찾을 수 없습니다.' 라고 명시하세요.\n\n"
                 "=== 참고 문서 시작 ===\n\n"
-                "{context}\n"
-                "=== 참고 문서 끝 ===\n\n"
+                "{context}\n\n"
+                "=== 참고 문서 끝 ===\n"
             )
             user_template = f"({ '한국어로' if lang=='ko' else 'in English' }) 사용자 질문: {query}\n\n요약하고 단계별로 설명하세요."
             system_prompt = system_template.format(context=context_text)
