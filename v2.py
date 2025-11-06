@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🚁 Drone Info Assistant — RAG 기반 Streamlit 앱
+Drone Info Assistant — RAG 기반 Streamlit 앱
 - 폴더 내 PDF를 자동 로드하여 벡터 인덱스 구축
 - Ollama 또는 OpenAI 기반 LLM 지원 가능
 """
@@ -20,7 +20,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 
 # =====================================
-# 🔧 기본 설정
+# 기본 설정
 # =====================================
 PDF_DIR = "drone_pdfs"      # PDF 폴더명 (donre_pdfs → 오타 수정)
 TEXT_DIR = "data"
@@ -32,7 +32,7 @@ st.title("🛸 Drone Info Assistant — RAG 기반 문서 검색 & 답변")
 
 
 # =====================================
-# 📄 DATA 로드
+# PDF 로드
 # =====================================
 def load_all_data(pdf_dir: str, text_dir: str = "data"):
     text_paths = []
@@ -43,8 +43,8 @@ def load_all_data(pdf_dir: str, text_dir: str = "data"):
 
     pdf_paths = glob.glob(os.path.join(pdf_dir, "*.pdf"))
     if not pdf_paths:
-        st.error(f"❌ PDF 폴더({pdf_dir})에 파일이 없습니다.")
-        return [] # skip text folder checking
+        st.error(f"PDF 폴더({pdf_dir})에 파일이 없습니다.")
+        return []
 
     all_docs = []
     for pdf_path in pdf_paths:
