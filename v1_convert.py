@@ -40,7 +40,7 @@ def extract_text_from_pdf(pdf_path: str) -> str:
         text += page_text + "\n"
     return clean_text(text)
 
-def extract_text_from_md(md_path: str) -> str:
+def extract_text_from_file(md_path: str) -> str:
     """md파일에서 텍스트 추출"""
     with open(md_path, "r") as f:
         text = f.read()
@@ -57,14 +57,17 @@ def split_into_chunks(text: str, chunk_size=1000, overlap=150):
     return splitter.split_text(text)
 
 
-def convert_data_to_json(pdf_folder="drone_pdfs", md_folder='data', output_path="drone_docs.json"):
-    """PDF 및 md파일 전체 변환"""
+def convert_data_to_json(pdf_folder="drone_pdfs", text_folder='data', output_path="drone_docs.json"):
+    """PDF 및 md,rst파일 전체 변환"""
     all_docs = []
 
     pdf_files = [f for f in os.listdir(pdf_folder) if f.lower().endswith(".pdf")]
-    md_files = [f.as_posix() for f in Path(md_folder).rglob("*.md")]
+    text_files = []
+    for file_path in Path(text_folder).rglob('*'):
+        if file_path.suffix.lower() not in ['.md', '.rst']:
+            continue
+        text_files.append(file_path.as_posix())
 
-    print(md_files)
     if not pdf_files:
         print("⚠️ PDF 파일이 없습니다.")
         return
@@ -85,9 +88,9 @@ def convert_data_to_json(pdf_folder="drone_pdfs", md_folder='data', output_path=
                 "source": pdf_path
             })
 
-    for md_path in tqdm(md_files, desc="md 변환 중"):
-        category = "매뉴얼"
-        text = extract_text_from_md(md_path)
+    for file_path in tqdm(text_files, desc="md, rst 변환 중"):
+        category = "매뉴얼" ### 
+        text = extract_text_from_file(file_path)
 
         chunks = split_into_chunks(text)
 
@@ -97,7 +100,7 @@ def convert_data_to_json(pdf_folder="drone_pdfs", md_folder='data', output_path=
                 "category": category,
                 "chunk_id": idx,
                 "content": chunk,
-                "source": md_path
+                "source": file_path
             })
 
     with open(output_path, "w", encoding="utf-8") as f:
