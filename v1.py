@@ -6,6 +6,7 @@ Streamlit RAG 앱 — Drone Info Assistant
 """
 
 import os
+from pathlib import Path
 import re
 import glob
 import faiss
@@ -56,8 +57,10 @@ def detect_language(text: str) -> str:
     except LangDetectException:
         return "unknown"
 
-def load_all_pdfs(pdf_dir: str) -> List[Document]:
+def load_all_data(pdf_dir: str, txt_dir: str = 'data') -> List[Document]:
+    """txt_dir: for MD, RST"""
     pdf_paths = glob.glob(os.path.join(pdf_dir, "*.pdf"))
+
     docs: List[Document] = []
     for p in sorted(pdf_paths):
         try:
@@ -71,12 +74,27 @@ def load_all_pdfs(pdf_dir: str) -> List[Document]:
             docs.extend(loaded)
         except Exception as e:
             st.warning(f"PDF 로드 실패: {os.path.basename(p)} -> {e}")
+
+    for path in Path(txt_dir).rglob('*'):
+        if path.suffix.lower() not in ['.md', '.rst']:
+            continue
+        with open(path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        docs.append(Document(
+            page_content=content,
+            metadata = {
+                'source': os.path.basename(path),
+                'category': '매뉴얼',
+            }
+        ))
+        
     return docs
 
 def build_vectorstore(pdf_dir: str = PDF_DIR, index_dir: str = INDEX_DIR) -> Optional[FAISS]:
-    docs = load_all_pdfs(pdf_dir)
+    docs = load_all_data(pdf_dir)
     if not docs:
-        st.error("PDF 데이터가 없습니다. drone_pdfs 폴더를 확인하세요.")
+        st.error("데이터가 없습니다. drone_pdfs/data 폴더를 확인하세요.")
         return None
 
     splitter = RecursiveCharacterTextSplitter(chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP, add_start_index=True)

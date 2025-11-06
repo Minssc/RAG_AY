@@ -7,7 +7,7 @@
 ## 🧩 Requirements
 
 ```bash
-pip install faiss-cpu langchain langchain-core langchain-ollama langchain-community streamlit pymupdf tqdm pypdf
+pip install faiss-cpu langchain langchain-core langchain-ollama langchain-community streamlit pymupdf tqdm pypdf langdetect cryptography
 ```
 
 ---
