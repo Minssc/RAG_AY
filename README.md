@@ -1,5 +1,13 @@
 # 🚁 팀 애용 RAG 프로젝트
 
+# Requirements
+```pip install faiss-cpu langchain langchain-core langchain-ollama langchain-community streamlit pymupdf tqdm pypdf```
+
+# 추가 구현사항
+- 파일 업로드: 사용자가 직접 문서 업로드 가능
+- 다국어 지원: 영어/한국어 등 다국어 응답
+- 필터링/검색 옵션: 카테고리별, 난이도별 등 필터 기능
+
 ## 📚 데이터 출처
 
 ### 🏢 [대한드론진흥협회](https://kodpa.or.kr)

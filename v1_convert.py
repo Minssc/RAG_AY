@@ -5,6 +5,7 @@
 """
 
 import os
+from pathlib import Path
 import re
 import json
 import fitz  # PyMuPDF
@@ -39,6 +40,12 @@ def extract_text_from_pdf(pdf_path: str) -> str:
         text += page_text + "\n"
     return clean_text(text)
 
+def extract_text_from_file(md_path: str) -> str:
+    """md파일에서 텍스트 추출"""
+    with open(md_path, "r") as f:
+        text = f.read()
+    return clean_text(text)
+
 
 def split_into_chunks(text: str, chunk_size=1000, overlap=150):
     """LangChain TextSplitter로 문단 분리"""
@@ -50,11 +57,17 @@ def split_into_chunks(text: str, chunk_size=1000, overlap=150):
     return splitter.split_text(text)
 
 
-def convert_pdfs_to_json(pdf_folder="drone_pdfs", output_path="drone_docs.json"):
-    """폴더 내 PDF 파일 전체 변환"""
+def convert_data_to_json(pdf_folder="drone_pdfs", text_folder='data', output_path="drone_docs.json"):
+    """PDF 및 md,rst파일 전체 변환"""
     all_docs = []
 
     pdf_files = [f for f in os.listdir(pdf_folder) if f.lower().endswith(".pdf")]
+    text_files = []
+    for file_path in Path(text_folder).rglob('*'):
+        if file_path.suffix.lower() not in ['.md', '.rst']:
+            continue
+        text_files.append(file_path.as_posix())
+
     if not pdf_files:
         print("⚠️ PDF 파일이 없습니다.")
         return
@@ -75,16 +88,30 @@ def convert_pdfs_to_json(pdf_folder="drone_pdfs", output_path="drone_docs.json")
                 "source": pdf_path
             })
 
+    for file_path in tqdm(text_files, desc="md, rst 변환 중"):
+        category = "매뉴얼" ### 
+        text = extract_text_from_file(file_path)
+
+        chunks = split_into_chunks(text)
+
+        for idx, chunk in enumerate(chunks):
+            all_docs.append({
+                "title": filename.replace(".md", ""),
+                "category": category,
+                "chunk_id": idx,
+                "content": chunk,
+                "source": file_path
+            })
+
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump({"documents": all_docs}, f, ensure_ascii=False, indent=2)
 
     print(f"\n✅ 변환 완료: {output_path}")
     print(f"총 {len(all_docs)}개의 문단이 저장되었습니다.")
 
-
 if __name__ == "__main__":
     os.makedirs("drone_pdfs", exist_ok=True)
-    convert_pdfs_to_json("drone_pdfs", "drone_docs.json")
+    convert_data_to_json("drone_pdfs", 'data', "drone_docs.json")
 
 
 # #!/usr/bin/env python3
